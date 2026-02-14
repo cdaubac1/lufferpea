@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine? 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffa8b5 0%, #ff6b9d 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            position: relative;
+            z-index: 5;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #ff1744;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .heart {
+            font-size: 4em;
+            animation: heartbeat 1.5s infinite;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            10%, 30% { transform: scale(1.1); }
+            20%, 40% { transform: scale(1); }
+        }
+
+        .button-container {
+            margin-top: 50px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        button {
+            font-size: 1.5em;
+            font-weight: bold;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            pointer-events: auto;
+            position: absolute;
+        }
+
+        #yesBtn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff1744 100%);
+            color: white;
+            transform-origin: center;
+            left: calc(50% - 120px);
+            top: 65%;
+            transform: translate(-50%, -50%);
+        }
+
+        #yesBtn:hover {
+            box-shadow: 0 6px 20px rgba(255, 23, 68, 0.4);
+        }
+
+        #noBtn {
+            background: linear-gradient(135deg, #e0e0e0 0%, #bdbdbd 100%);
+            color: #666;
+            transform-origin: center;
+        }
+
+        .celebration {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .celebration.active {
+            display: flex;
+        }
+
+        .celebration h2 {
+            font-size: 4em;
+            color: #ff1744;
+            margin-bottom: 20px;
+            animation: bounceIn 1s;
+        }
+
+        .celebration .hearts {
+            font-size: 3em;
+            animation: float 3s infinite;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="heart">💕</div>
+        <h1>Will You Be My Valentine?</h1>
+        
+        <div class="button-container">
+            <button id="yesBtn">YES 🤪</button>
+            <button id="noBtn">no i hate you</button>
+        </div>
+    </div>
+
+    <div class="celebration" id="celebration">
+        <h2>ehehehehhehehe good choice</h2>
+        <div class="hearts">💕 🪿 🐵 🪿 🐵 🪿 💕</div>
+        <p style="font-size: 2em; color: #ff1744; margin-top: 20px;">I luff you ❤️❤️</p>
+    </div>
+
+    <script>
+        // ADD YOUR OWN IMAGE PATHS HERE
+        // Just put your PNG files in the same folder as this HTML file
+        // and list their filenames here
+        const imagePaths = [
+            'ikeamoke.png',
+            'sweetpea.png',
+            'monke.png',
+            'monke2.png',
+            'sadcat.png',
+            'sadsad.png',
+            'mike.png'
+            // Add more images as needed
+        ];
+
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const celebration = document.getElementById('celebration');
+        const buttonContainer = document.querySelector('.button-container');
+
+        let yesSizeMultiplier = 1;
+        let noSizeMultiplier = 1;
+
+        // Function to drop an image at the current No button position
+        function dropImage() {
+            const img = document.createElement('img');
+            
+            // Pick a random image from the array
+            const randomImage = imagePaths[Math.floor(Math.random() * imagePaths.length)];
+            img.src = randomImage;
+            
+            // Position it where the No button currently is
+            const currentRect = noBtn.getBoundingClientRect();
+            img.style.position = 'fixed';
+            img.style.left = currentRect.left + 'px';
+            img.style.top = currentRect.top + 'px';
+            img.style.width = '100px'; // Adjust size as needed
+            img.style.height = '100px'; // Adjust size as needed
+            img.style.objectFit = 'contain';
+            img.style.zIndex = '5';
+            img.style.pointerEvents = 'none';
+            img.style.opacity = '0.8';
+            
+            // Add error handling for missing images - show placeholder emoji
+            img.onerror = function() {
+                // If image fails to load, create a text element instead
+                const placeholder = document.createElement('div');
+                placeholder.textContent = '💔';
+                placeholder.style.position = 'fixed';
+                placeholder.style.left = currentRect.left + 'px';
+                placeholder.style.top = currentRect.top + 'px';
+                placeholder.style.fontSize = '60px';
+                placeholder.style.zIndex = '5';
+                placeholder.style.pointerEvents = 'none';
+                placeholder.style.opacity = '0.8';
+                document.body.appendChild(placeholder);
+                img.remove();
+            };
+            
+            document.body.appendChild(img);
+        }
+
+        // Function to check if two rectangles overlap
+        function isOverlapping(rect1, rect2) {
+            return !(rect1.right < rect2.left || 
+                     rect1.left > rect2.right || 
+                     rect1.bottom < rect2.top || 
+                     rect1.top > rect2.bottom);
+        }
+
+        // Function to get a random position that doesn't overlap with Yes button
+        function getRandomPosition() {
+            const padding = 20;
+            const maxAttempts = 50;
+            let attempts = 0;
+            
+            while (attempts < maxAttempts) {
+                const randomX = padding + Math.random() * (window.innerWidth - noBtn.offsetWidth - padding * 2);
+                const randomY = padding + Math.random() * (window.innerHeight - noBtn.offsetHeight - padding * 2);
+                
+                // Create a temporary rect for the new position
+                const newRect = {
+                    left: randomX,
+                    right: randomX + noBtn.offsetWidth * noSizeMultiplier,
+                    top: randomY,
+                    bottom: randomY + noBtn.offsetHeight * noSizeMultiplier
+                };
+                
+                const yesRect = yesBtn.getBoundingClientRect();
+                
+                // Check if it overlaps with Yes button (with some extra margin)
+                const margin = 50;
+                const yesRectWithMargin = {
+                    left: yesRect.left - margin,
+                    right: yesRect.right + margin,
+                    top: yesRect.top - margin,
+                    bottom: yesRect.bottom + margin
+                };
+                
+                if (!isOverlapping(newRect, yesRectWithMargin)) {
+                    return { x: randomX, y: randomY };
+                }
+                
+                attempts++;
+            }
+            
+            // Fallback: position far from Yes button
+            const yesRect = yesBtn.getBoundingClientRect();
+            const isYesOnLeft = yesRect.left < window.innerWidth / 2;
+            
+            return {
+                x: isYesOnLeft ? window.innerWidth - noBtn.offsetWidth - padding : padding,
+                y: padding + Math.random() * (window.innerHeight - noBtn.offsetHeight - padding * 2)
+            };
+        }
+
+        // Initialize No button position
+        function initializeNoButton() {
+            // Start No button next to Yes button (side by side under the text)
+            const startX = window.innerWidth / 2 + 20; // Just to the right of center
+            const startY = window.innerHeight * 0.65 - noBtn.offsetHeight / 2; // Same level as Yes button
+            
+            noBtn.style.left = startX + 'px';
+            noBtn.style.top = startY + 'px';
+        }
+
+        // Initialize on load
+        window.addEventListener('load', initializeNoButton);
+
+        noBtn.addEventListener('mouseenter', () => {
+            // Drop an image at the current position before moving
+            dropImage();
+            
+            // Increase yes button size
+            yesSizeMultiplier += 0.05;
+            const currentTransform = 'translate(-50%, -50%)';
+            yesBtn.style.transform = `${currentTransform} scale(${yesSizeMultiplier})`;
+            
+            // Decrease no button size
+            noSizeMultiplier -= 0.03;
+            if (noSizeMultiplier < 0.2) {
+                noSizeMultiplier = 0.2; // Minimum size
+            }
+            
+            // Move no button to random position
+            const pos = getRandomPosition();
+            noBtn.style.left = pos.x + 'px';
+            noBtn.style.top = pos.y + 'px';
+            noBtn.style.transform = `scale(${noSizeMultiplier})`;
+        });
+
+        yesBtn.addEventListener('click', () => {
+            celebration.classList.add('active');
+            
+            // Create confetti effect
+            for (let i = 0; i < 50; i++) {
+                createConfetti();
+            }
+        });
+
+        noBtn.addEventListener('click', () => {
+            // This makes it even harder to click no
+            const pos = getRandomPosition();
+            noBtn.style.left = pos.x + 'px';
+            noBtn.style.top = pos.y + 'px';
+        });
+
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.style.position = 'fixed';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.top = '-10px';
+            confetti.style.fontSize = '2em';
+            confetti.innerHTML = ['💕', '💖', '💗', '💓', '💝'][Math.floor(Math.random() * 5)];
+            confetti.style.zIndex = '999';
+            confetti.style.pointerEvents = 'none';
+            
+            document.body.appendChild(confetti);
+            
+            const fallDuration = 3000 + Math.random() * 2000;
+            const startTime = Date.now();
+            
+            function animateConfetti() {
+                const elapsed = Date.now() - startTime;
+                const progress = elapsed / fallDuration;
+                
+                if (progress < 1) {
+                    confetti.style.top = (progress * 110) + '%';
+                    confetti.style.transform = `rotate(${progress * 360}deg)`;
+                    requestAnimationFrame(animateConfetti);
+                } else {
+                    confetti.remove();
+                }
+            }
+            
+            animateConfetti();
+        }
+    </script>
+</body>
+</html>
